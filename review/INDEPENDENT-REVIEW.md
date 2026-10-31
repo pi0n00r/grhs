@@ -6,9 +6,10 @@
 | Review status | Completed with changes |
 | Reviewer | CodeRabbit automated third-party review service |
 | Review medium | [GitHub pull request #1](https://github.com/pi0n00r/grhs/pull/1) |
-| Reviewed revision | `dcaea2b3c7f275fcee1d0668d083ba9b30a8967d` |
-| Review run | `07ae88b7-6e44-4467-aa3f-33d43a4ec319` |
-| Disposition revisions | `1b3cf88dcb265275bdb612c19ee4b389188daffb`, `9873f99573e2141687818ebebcd326049c1b9497` |
+| Initial reviewed revision | `dcaea2b3c7f275fcee1d0668d083ba9b30a8967d` |
+| Follow-up reviewed revision | `1f15abd08bd6382fdaa031f22e3385a43716fa57` |
+| Review runs | `07ae88b7-6e44-4467-aa3f-33d43a4ec319`; GitHub review `5721367787` |
+| Disposition revisions | `1b3cf88dcb265275bdb612c19ee4b389188daffb`, `9873f99573e2141687818ebebcd326049c1b9497`, `c1148ab0f77405d0d1ffdc46f24005e47e0b98e4` |
 | Disposition completed | Yes |
 
 ## Scope and limits
@@ -29,6 +30,7 @@ public-review process described in `review/REVIEW-GUIDE.md`.
 | GRHS-RV-004 | [r4430581156](https://github.com/pi0n00r/grhs/pull/1#discussion_r4430581156) | PDF export saved updated fields over the source DOCX. | Accepted. Export now works on an exact temporary copy and deletes it afterward. The source DOCX hash remained unchanged in the qualified export test. | `9873f99` |
 | GRHS-RV-005 | [r4430581159](https://github.com/pi0n00r/grhs/pull/1#discussion_r4430581159) | The checksum verifier did not require every release artifact or reject duplicate entries. | Accepted. The verifier enforces the complete seven-file release set, unique paths, and valid lowercase SHA-256 digests. | `9873f99` |
 | GRHS-RV-006 | [r4430581161](https://github.com/pi0n00r/grhs/pull/1#discussion_r4430581161) | CI found a platform-dependent normalization-fixture checksum. | Accepted. Generated CSV and JSON now use explicit LF bytes; canonical hashes were regenerated and both GitHub validation runs passed. | `1b3cf88` |
+| GRHS-RV-007 | [r4430601483](https://github.com/pi0n00r/grhs/pull/1#discussion_r4430601483) | Python optimization could remove bare assertions and disable release-integrity checks. | Accepted. All release validators now use explicit exceptions; the generator also rejects non-NFC source data explicitly. Normal and optimized runs pass, while optimized negative probes still fail as required. | `c1148ab` |
 
 ## Qualification evidence
 
@@ -37,5 +39,6 @@ public-review process described in `review/REVIEW-GUIDE.md`.
 - two consecutive DOCX rebuilds were byte-identical;
 - Microsoft Word exported a 12-page PDF without changing the rebuilt DOCX;
 - GitHub push and pull-request validation passed on the corrected generator;
-- all six substantive CodeRabbit comments have an explicit disposition above.
+- normal and `python -O` validation both pass, and optimized negative probes fail;
+- all seven substantive CodeRabbit comments have an explicit disposition above.
 
