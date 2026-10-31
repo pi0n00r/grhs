@@ -3,9 +3,13 @@
 
 from __future__ import annotations
 
+import argparse
+import os
 import re
 from datetime import datetime, timezone
 from pathlib import Path
+from tempfile import TemporaryDirectory
+from zipfile import ZIP_DEFLATED, ZipFile, ZipInfo
 
 from docx import Document
 from docx.enum.section import WD_SECTION
@@ -19,7 +23,39 @@ from docx.shared import Inches, Pt, RGBColor
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "SPECIFICATION.md"
-OUTPUT = ROOT / "GRHS-v0.4.0.docx"
+OUTPUT = ROOT / "build" / "GRHS-v0.4.0.docx"
+ZIP_TIMESTAMP = (2026, 10, 31, 0, 0, 0)
+
+
+def write_reproducible_docx(source: Path, output: Path) -> None:
+    """Rewrite an OOXML package with stable ordering and ZIP metadata."""
+
+    output.parent.mkdir(parents=True, exist_ok=True)
+    temporary_output = output.with_name(f".{output.name}.tmp")
+    try:
+        with ZipFile(source, "r") as package, ZipFile(
+            temporary_output,
+            "w",
+            compression=ZIP_DEFLATED,
+            compresslevel=9,
+            strict_timestamps=True,
+        ) as normalized:
+            for original in sorted(package.infolist(), key=lambda item: item.filename):
+                entry = ZipInfo(original.filename, ZIP_TIMESTAMP)
+                entry.compress_type = ZIP_DEFLATED
+                entry.create_system = 3
+                entry.external_attr = ((0o40755 if original.is_dir() else 0o100644) & 0xFFFF) << 16
+                if original.is_dir():
+                    entry.external_attr |= 0x10
+                normalized.writestr(
+                    entry,
+                    package.read(original.filename),
+                    compress_type=ZIP_DEFLATED,
+                    compresslevel=9,
+                )
+        os.replace(temporary_output, output)
+    finally:
+        temporary_output.unlink(missing_ok=True)
 
 
 def set_cell_shading(cell, fill: str) -> None:
@@ -400,7 +436,7 @@ def add_markdown_body(document: Document, text: str) -> None:
         add_inline(p, " ".join(part.strip() for part in paragraph_lines))
 
 
-def build() -> None:
+def build(output: Path = OUTPUT) -> None:
     document = Document()
     configure_styles(document)
     section = document.sections[0]
@@ -435,10 +471,21 @@ def build() -> None:
     add_toc(document)
     add_markdown_body(document, SOURCE.read_text(encoding="utf-8"))
 
-    document.save(OUTPUT)
-    print(f"WROTE {OUTPUT}")
+    with TemporaryDirectory(prefix="grhs-docx-") as temporary_directory:
+        raw_docx = Path(temporary_directory) / "raw.docx"
+        document.save(raw_docx)
+        write_reproducible_docx(raw_docx, output)
+    print(f"WROTE {output}")
 
 
 if __name__ == "__main__":
-    build()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--output",
+        type=Path,
+        default=OUTPUT,
+        help="rebuild destination (default: build/GRHS-v0.4.0.docx)",
+    )
+    arguments = parser.parse_args()
+    build(arguments.output.resolve())
 

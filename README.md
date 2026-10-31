@@ -33,11 +33,18 @@ python scripts/validate_release.py
 python scripts/verify_checksums.py
 ```
 
+Rebuilds are written under `build/`; the checksummed DOCX and PDF in the
+repository root are immutable release artifacts. The DOCX builder normalizes
+ZIP ordering and metadata so identical source produces identical bytes.
+
 On Windows with Microsoft Word installed, create the PDF:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File scripts/export_pdf.ps1
 ```
+
+PDF export operates on a temporary DOCX copy so updating Word fields and the
+table of contents cannot mutate the rebuilt source DOCX.
 
 The repository's GitHub Actions workflow regenerates the repertoire, rejects
 uncommitted generated-data drift, validates the release, and verifies the

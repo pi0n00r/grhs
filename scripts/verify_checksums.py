@@ -9,6 +9,15 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = ROOT / "SHA256SUMS"
+REQUIRED_ARTIFACTS = {
+    "SPECIFICATION.md",
+    "data/repertoire.csv",
+    "tests/normalization.json",
+    "GRHS-v0.4.0.docx",
+    "GRHS-v0.4.0.pdf",
+    "archive/v0.3/GRHS-v0.3.docx",
+    "LICENSE",
+}
 
 
 def digest(path: Path) -> str:
@@ -20,19 +29,26 @@ def digest(path: Path) -> str:
 
 
 def main() -> None:
-    checked = 0
+    checked: set[str] = set()
     for raw_line in MANIFEST.read_text(encoding="utf-8").splitlines():
         line = raw_line.strip()
         if not line:
             continue
         expected, relative = line.split(maxsplit=1)
+        assert relative not in checked, f"duplicate checksum entry: {relative}"
+        assert len(expected) == 64 and all(char in "0123456789abcdef" for char in expected), (
+            f"invalid SHA-256 digest: {relative}"
+        )
         path = ROOT / relative
         assert path.is_file(), f"missing checksummed file: {relative}"
         actual = digest(path)
         assert actual == expected, f"checksum mismatch: {relative}"
-        checked += 1
-    assert checked > 0, "empty checksum manifest"
-    print(f"CHECKSUMS_VALID files={checked}")
+        checked.add(relative)
+    missing = REQUIRED_ARTIFACTS - checked
+    unexpected = checked - REQUIRED_ARTIFACTS
+    assert not missing, f"missing checksum entries: {sorted(missing)}"
+    assert not unexpected, f"unexpected checksum entries: {sorted(unexpected)}"
+    print(f"CHECKSUMS_VALID files={len(checked)}")
 
 
 if __name__ == "__main__":
