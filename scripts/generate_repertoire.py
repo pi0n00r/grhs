@@ -99,7 +99,8 @@ def main() -> None:
         )
         writer.writeheader()
         for identifier, inventory, ipa, grapheme, uppercase, note in ROWS:
-            assert grapheme == unicodedata.normalize("NFC", grapheme)
+            if grapheme != unicodedata.normalize("NFC", grapheme):
+                raise ValueError(f"repertoire source is not NFC: {identifier}")
             writer.writerow(
                 {
                     "id": identifier,
