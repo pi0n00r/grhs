@@ -1,0 +1,106 @@
+{
+  "schema": "grhs-normalization-v1",
+  "specification_version": "0.4.0",
+  "normalization": "NFC",
+  "canonical_equivalence": [
+    {
+      "input": "á",
+      "output": "á"
+    },
+    {
+      "input": "í",
+      "output": "í"
+    },
+    {
+      "input": "ú",
+      "output": "ú"
+    },
+    {
+      "input": "ç",
+      "output": "ç"
+    },
+    {
+      "input": "ṭ",
+      "output": "ṭ"
+    },
+    {
+      "input": "ḍ",
+      "output": "ḍ"
+    },
+    {
+      "input": "ṇ",
+      "output": "ṇ"
+    },
+    {
+      "input": "ñ",
+      "output": "ñ"
+    },
+    {
+      "input": "ŗ",
+      "output": "ŗ"
+    },
+    {
+      "input": "ş",
+      "output": "ş"
+    },
+    {
+      "input": "ġ",
+      "output": "ġ"
+    },
+    {
+      "input": "ž",
+      "output": "ž"
+    },
+    {
+      "input": "ṃ",
+      "output": "ṃ"
+    }
+  ],
+  "longest_match": [
+    {
+      "text": "kʰ",
+      "graphemes": [
+        "kʰ"
+      ]
+    },
+    {
+      "text": "aiṃ",
+      "graphemes": [
+        "ai",
+        "ṃ"
+      ]
+    },
+    {
+      "text": "au",
+      "graphemes": [
+        "au"
+      ]
+    },
+    {
+      "text": "ny",
+      "graphemes": [
+        "ny"
+      ]
+    },
+    {
+      "text": "ŗʰ",
+      "graphemes": [
+        "ŗʰ"
+      ]
+    }
+  ],
+  "must_not_silently_normalize": [
+    {
+      "input": "ı",
+      "reason": "dotless i is not GRHS"
+    },
+    {
+      "input": "kh",
+      "reason": "ordinary h is not the canonical aspiration marker"
+    },
+    {
+      "input": "ṣ",
+      "reason": "visually related letter is not GRHS ş"
+    }
+  ]
+}
