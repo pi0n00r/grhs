@@ -84,6 +84,7 @@ def main() -> None:
     with (data_dir / "repertoire.csv").open("w", encoding="utf-8", newline="") as handle:
         writer = csv.DictWriter(
             handle,
+            lineterminator="\n",
             fieldnames=[
                 "id",
                 "inventory",
@@ -145,8 +146,8 @@ def main() -> None:
             {"input": "ṣ", "reason": "visually related letter is not GRHS ş"},
         ],
     }
-    (tests_dir / "normalization.json").write_text(
-        json.dumps(vectors, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    (tests_dir / "normalization.json").write_bytes(
+        (json.dumps(vectors, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
     )
 
 
