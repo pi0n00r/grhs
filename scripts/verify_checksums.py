@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# SPDX-FileCopyrightText: 2026 Gary Bajaj
+# SPDX-License-Identifier: AGPL-3.0-only
+
 """Verify the immutable release artifacts listed in SHA256SUMS."""
 
 from __future__ import annotations

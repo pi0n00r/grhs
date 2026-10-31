@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 Gary Bajaj
+# SPDX-License-Identifier: AGPL-3.0-only
+
 param(
     [string]$Source = (Join-Path (Split-Path -Parent $PSScriptRoot) 'build\GRHS-v0.4.0.docx'),
     [string]$Destination = (Join-Path (Split-Path -Parent $PSScriptRoot) 'build\GRHS-v0.4.0.pdf')
