@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: 2026 Gary Bajaj
+# SPDX-License-Identifier: AGPL-3.0-only
+
+__pycache__/
+*.py[cod]
+~$*
+.DS_Store
+Thumbs.db
+*.tmp
+*.bak
+build/
+

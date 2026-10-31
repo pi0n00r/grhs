@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: 2026 Gary Bajaj
+# SPDX-License-Identifier: AGPL-3.0-only
+
+version = 1
+
+[[annotations]]
+path = [
+    "*.md",
+    "*.docx",
+    "*.pdf",
+    "SHA256SUMS",
+    "archive/**",
+    "data/**",
+    "review/**",
+    "tests/**",
+]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 Gary Bajaj"
+SPDX-License-Identifier = "AGPL-3.0-only"
